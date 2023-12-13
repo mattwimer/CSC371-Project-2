@@ -3,6 +3,8 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -12,7 +14,7 @@ public class Main {
         // String path = userInput.nextLine();
 
         // ****Professor, change this file path to test different files****
-        String path = ".\\Test_2.txt";
+        String path = ".\\Test_1.txt";
         File file = new File(path);
         System.out.println("Using: \"" + path + "\" as path.");
 
@@ -22,7 +24,9 @@ public class Main {
         }
         try{
             Scanner fileInput = new Scanner(file);
-            CFG.buildCFG(fileInput);
+            HashMap<String, ArrayList<String>> cfg = CFG.buildCFG(fileInput);
+            cfg = CFG.simplifyCFG(cfg);
+            CFG.printCFG(cfg);
         }
         catch(FileNotFoundException f){
             System.out.println("Oops! This should be impossible.");
