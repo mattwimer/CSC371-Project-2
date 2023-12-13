@@ -62,7 +62,15 @@ public class CFG {
      * @return the given CFG minus any epsilon rules.
      */
     public static HashMap<String, ArrayList<String>> removeEpsilonRules(HashMap<String, ArrayList<String>> cfg){
-       
+        // if a rules only production is epsilon, remove it entirely.
+        
+        
+        // for all rules,
+        // if one of a rules productions is epsilon, remove that production and flag it. 
+
+        // for all rules,
+        // if a rule has a production containing a flagged rule, add combinations of said production with epsilon-
+        // rules present and not present
         
         return cfg;
     }
