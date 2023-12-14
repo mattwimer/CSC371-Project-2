@@ -63,6 +63,15 @@ public class CFG {
      */
     public static HashMap<String, ArrayList<String>> removeEpsilonRules(HashMap<String, ArrayList<String>> cfg){
         // if a rules only production is epsilon, remove it entirely.
+        ArrayList<String> flagged = new ArrayList<String>();
+        for (String rule : cfg.keySet())
+            if(cfg.get(rule).size() == 1 && cfg.get(rule).get(0).compareTo("0") == 0)
+                flagged.add(rule);
+                // cfg.remove(rule); throws ConcurrentModificationException :/
+        for (String rule : flagged)
+            removeRule(cfg, rule);
+
+        
         
         
         // for all rules,
@@ -81,6 +90,22 @@ public class CFG {
      */
     public static HashMap<String, ArrayList<String>> removeUselessRules(HashMap<String, ArrayList<String>> cfg){
         
+
+        return cfg;
+    }
+
+    /**
+     * @param cfg the CFG to remove a rule from.
+     * @param rule the rule to remove from the CFG.
+     * @return the given CFG minus any useless rules.
+     */
+    private static HashMap<String, ArrayList<String>> removeRule(HashMap<String, ArrayList<String>> cfg, String rule){
+        cfg.remove(rule);
+        for (String key : cfg.keySet()) {
+            for (int i = 0 ; i < cfg.get(key).size(); i++){
+                if()
+            }
+        }
 
         return cfg;
     }

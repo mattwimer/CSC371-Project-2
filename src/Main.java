@@ -14,7 +14,7 @@ public class Main {
         // String path = userInput.nextLine();
 
         // ****Professor, change this file path to test different files****
-        String path = ".\\Test_1.txt";
+        String path = ".\\Test_2.txt";
         File file = new File(path);
         System.out.println("Using: \"" + path + "\" as path.");
 
