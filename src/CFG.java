@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -62,7 +63,7 @@ public class CFG {
      * @return the given CFG minus any epsilon rules.
      */
     public static HashMap<String, ArrayList<String>> removeEpsilonRules(HashMap<String, ArrayList<String>> cfg){
-        // if a rules only production is epsilon, remove it entirely.
+        // if a rule's only production is epsilon, remove it entirely.
         ArrayList<String> flagged = new ArrayList<String>();
         for (String rule : cfg.keySet())
             if(cfg.get(rule).size() == 1 && cfg.get(rule).get(0).compareTo("0") == 0)
@@ -73,15 +74,65 @@ public class CFG {
 
         
         
-        
+        flagged = new ArrayList<String>();
         // for all rules,
-        // if one of a rules productions is epsilon, remove that production and flag it. 
+        for (String rule : cfg.keySet())
+            // for each production
+            for (int i = cfg.get(rule).size() - 1; i > 0 ; i--)
+            // if one of a rules productions is epsilon, remove that production and flag it. 
+                if(cfg.get(rule).get(i).compareTo("0") == 0){
+                    flagged.add(rule);
+                    cfg.get(rule).remove(i); // changes index of elements right of it, so we begin at last index
+                }
+
 
         // for all rules,
-        // if a rule has a production containing a flagged rule, add combinations of said production with epsilon-
-        // rules present and not present
+        for (String rule : cfg.keySet()){
+            // for each production
+            for (int i = cfg.get(rule).size() - 1; i > 0 ; i--){
+                String production = cfg.get(rule).get(i);
+                // for each flagged rule,
+                int count = 0;
+                for (String flagRule : flagged)
+                    // count occurrences of rule in production
+                    for (int j = 0 ; j < production.length() ; j++)
+                        if(production.charAt(i) == flagRule.charAt(0))
+                            count++;
+                
+                // create an inclusion matrix ie for each flagged rule found in production, create combinations of
+                //      the string either including the flagged rule or not
+                // generateInclusionMatrix()
+
+            }
+
+
+        }
         
         return cfg;
+    }
+
+    private static ArrayList<ArrayList<Boolean>> generateInclusionMatrix(int numCombinations){
+        int times = (int)Math.pow(2, numCombinations);
+        ArrayList<ArrayList<Boolean>> bools = new ArrayList<ArrayList<Boolean>>(times);
+        ArrayList<Boolean> currentCombo = new ArrayList<Boolean>(numCombinations);
+        int[] countTilSwap = new int[numCombinations];
+        for (int i = 0 ; i < numCombinations ; i++){
+            currentCombo.add(false);
+            countTilSwap[i] = ((int)Math.pow(2, i));
+        }
+        for (int i = 0 ; i < times ; i++){
+            bools.add((ArrayList<Boolean>)currentCombo.clone());
+            for(int j = 0 ; j < numCombinations ; j++){
+                countTilSwap[j] -= 1;
+                if (countTilSwap[j] == 0){
+                    currentCombo.set(j, !currentCombo.get(j)); // swap it
+                    countTilSwap[j] = ((int)Math.pow(2, j)); // count down to next swap
+                }
+            }
+        }
+
+
+        return bools;
     }
 
     /**
