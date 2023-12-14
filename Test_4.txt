@@ -1,0 +1,7 @@
+S-aA
+A-bB
+B-cC
+C-d
+D-e
+E-f
+F-g
