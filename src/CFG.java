@@ -78,34 +78,49 @@ public class CFG {
         // for all rules,
         for (String rule : cfg.keySet())
             // for each production
-            for (int i = cfg.get(rule).size() - 1; i > 0 ; i--)
+            for (int i = cfg.get(rule).size() - 1; i >= 0 ; i--)
             // if one of a rules productions is epsilon, remove that production and flag it. 
                 if(cfg.get(rule).get(i).compareTo("0") == 0){
                     flagged.add(rule);
                     cfg.get(rule).remove(i); // changes index of elements right of it, so we begin at last index
                 }
 
-
+        System.out.println("Flagged rules: " + flagged);
         // for all rules,
         for (String rule : cfg.keySet()){
             // for each production
-            for (int i = cfg.get(rule).size() - 1; i > 0 ; i--){
+            for (int i = cfg.get(rule).size() - 1; i >= 0 ; i--){
                 String production = cfg.get(rule).get(i);
                 // for each flagged rule,
                 int count = 0;
                 for (String flagRule : flagged)
                     // count occurrences of rule in production
                     for (int j = 0 ; j < production.length() ; j++)
-                        if(production.charAt(i) == flagRule.charAt(0))
+                        if(production.charAt(j) == flagRule.charAt(0))
                             count++;
-                
-                // create an inclusion matrix ie for each flagged rule found in production, create combinations of
-                //      the string either including the flagged rule or not
-                // generateInclusionMatrix()
 
+                // only simplify if a flagged rule appeared in the production
+                if(count >= 1){
+                    // create an inclusion matrix i.e. for each flagged rule found in production, create combinations of
+                    //      the string either including the flagged rule or not
+                    ArrayList<ArrayList<Boolean>> decisions = generateInclusionMatrix(count);
+                    // for each new possible production we need to add
+                    for (ArrayList<Boolean> decision : decisions){
+                        int k = 0;
+                        String stringPermutation = "";
+                        for (int j = 0 ; j < production.length() ; j++){
+                            if(flagged.contains(""+production.charAt(j))) // if character is a flagged rule
+                                stringPermutation += decision.get(k++) ? production.charAt(j):""; // use decision[k] to either include or not in the new string
+                            else
+                                stringPermutation += production.charAt(j); // otherwise, place the symbol back in the string
+                            // stringPermutation += flagged.contains(""+production.charAt(j)) && !decision.get(k++) ? "" : production.charAt(j);
+                            // above comment would suffice for above if/else. ternary operators are cool
+                        }
+                        cfg.get(rule).add(stringPermutation); // add all the permutations back to the rule's list of productions
+                    }
+                    cfg.get(rule).remove(i); //remove the original production ; it will be duplicated by the above loop
+                }
             }
-
-
         }
         
         return cfg;
