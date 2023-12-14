@@ -100,12 +100,18 @@ public class CFG {
      * @return the given CFG minus any useless rules.
      */
     private static HashMap<String, ArrayList<String>> removeRule(HashMap<String, ArrayList<String>> cfg, String rule){
+        // System.out.println("Removing \"" + rule + "\" from CFG...");
         cfg.remove(rule);
-        for (String key : cfg.keySet()) {
-            for (int i = 0 ; i < cfg.get(key).size(); i++){
-                if()
-            }
-        }
+        // for each rule
+        for (String key : cfg.keySet()) 
+            // for each production
+            for (int i = 0 ; i < cfg.get(key).size(); i++)
+                if(cfg.get(key).get(i).indexOf(rule) != -1) /* one of the productions contains the rule as a character */
+                    //replace the production with the same production excluding removed rule
+                    cfg.get(key).set(i, cfg.get(key).get(i).replaceAll(rule, ""));
+                
+            
+        
 
         return cfg;
     }
