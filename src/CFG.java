@@ -125,7 +125,8 @@ public class CFG {
                                 // stringPermutation += flagged.contains(""+production.charAt(j)) && !decision.get(k++) ? "" : production.charAt(j);
                                 // above comment would suffice for above if/else. ternary operators are cool
                             }
-                            cfg.get(rule).add(stringPermutation); // add all the permutations back to the rule's list of productions
+                            if(stringPermutation.length() > 0)
+                                cfg.get(rule).add(stringPermutation); // add all the permutations back to the rule's list of productions
                         }
                         cfg.get(rule).remove(i); //remove the original production ; it will be duplicated by the above loop
                     }
@@ -164,19 +165,19 @@ public class CFG {
      */
     public static HashMap<String, ArrayList<String>> removeUselessRules(HashMap<String, ArrayList<String>> cfg){
         // non-generating rules
-        
         // for all rules,
         HashSet<String> flagged = new HashSet<String>();
         for (String rule : cfg.keySet())
-            if(rule.compareTo("INITIAL") != 0)
-                // if rule can not reach a terminal production, remove it
-                if(!ruleCanBecomeTerminal(cfg, rule))
-                    // removeRule(cfg, rule);
-                    flagged.add(rule);
+        if(rule.compareTo("INITIAL") != 0)
+        // if rule can not reach a terminal production, remove it
+        if(!ruleCanBecomeTerminal(cfg, rule))
+        // removeRule(cfg, rule);
+        flagged.add(rule);
         for (String rule : flagged)
-            removeRule(cfg, rule);
-                    
+        removeRule(cfg, rule);
+        
         // non-reachable rules
+        // printCFG(cfg);
         
         HashSet<String> reachable = new HashSet<String>();
         flagged = new HashSet<String>();
@@ -185,7 +186,7 @@ public class CFG {
         for (String rule : cfg.keySet()){
             if(rule.compareTo("INITIAL") != 0){
                 if(!reachable.contains(rule)){
-                    System.out.println("Removing \"" + rule + "\" from CFG...");
+                    // System.out.println("Removing \"" + rule + "\" from CFG...");
                     // removeRule(cfg, rule);
                     flagged.add(rule);
                 }
@@ -214,7 +215,7 @@ public class CFG {
             if(Character.isUpperCase(production.charAt(i))){
                 cfg.get(rule).remove(0); // remove current production
                 if(!ruleCanBecomeTerminal(cfg, "" + production.charAt(i))) // check if non-terminal symbol can become terminal
-                    return false;
+                    return ruleCanBecomeTerminal(cfg, rule);
                 // otherwise, continue checking the production
                 cfg.get(rule).add(production);
             }    
@@ -230,13 +231,18 @@ public class CFG {
      * @param rule the rule to check productions from
      */
     private static void determineReachableFrom(HashMap<String, ArrayList<String>> cfg, HashSet<String> reachable, String rule){
+        if(cfg.get(rule).isEmpty()) // if we run out of productions to check, finish
+            return;
+
         // for each production
         for (int i = 0 ; i < cfg.get(rule).size() ; i++){
             String production = cfg.get(rule).get(i);
             for (int j = 0 ; j < production.length() ; j++){
                 if(Character.isUpperCase(production.charAt(j))){
                     reachable.add("" + production.charAt(j));
+                    cfg.get(rule).remove(i); // remove current production
                     determineReachableFrom(cfg, reachable, ""+production.charAt(j));
+                    cfg.get(rule).add(production); // place back the production
                 }
             }
         }

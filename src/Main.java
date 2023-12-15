@@ -12,9 +12,9 @@ public class Main {
 		Scanner userInput = new Scanner(System.in);
         System.out.println("Which file should I test? ");
         // String path = userInput.nextLine();
-        // System.out.println(CFG.generateInclusionMatrix(3));
+
         // ****Professor, change this file path to test different files****
-        String path = ".\\Example.txt";
+        String path = ".\\Test_1.txt";
         File file = new File(path);
         System.out.println("Using: \"" + path + "\" as path.");
 
